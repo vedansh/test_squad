@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+<body>
+<form id="slack" method="post" action="/scrum/">
+    {% csrf_token %}
+<input type="submit" name="login" value="Login with Slack">
+</form>
+</body>
+</html>

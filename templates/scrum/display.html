@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<form name="channel" method = "post" action="/scrum/display/">
+    {% csrf_token %}
+<input type="submit" name="display" value="Refresh">
+</form>
+<br>
+<form name="channel" method = "get" action="/scrum/channel/">
+<input type="submit" name="send_message" value="Send New Message">
+</form>
+
+<br>
+<form name="channel" method = "post" action="/scrum/logout/">
+    {% csrf_token %}
+<input type="submit" name="logout" value="Logout">
+</form>
+
+
+{% if user_msg %}
+    <table>
+        <tr><td><h3>User name </h3></td> <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td> <td><h3>message</h3></td></tr>
+    {% for message in user_msg %}
+
+          <tr><td>  {{ message.username }} </td>  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>  <td> {{ message.message }} </td></tr>
+
+    {% endfor %}
+    </table>
+{% endif %}
+
+
+
+</body>
+</html>

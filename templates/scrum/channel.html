@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<form name="channel" method = "post" action="/scrum/channel/">
+    {% csrf_token %}
+<input type = text name="to_send">
+<input type="submit" name="send_message" value="Send Message">
+</form>
+<br>
+<form name="channel" method = "post" action="/scrum/display/">
+    {% csrf_token %}
+<input type="submit" name="display" value="Display">
+</form>
+<br>
+<form name="channel" method = "post" action="/scrum/logout/">
+    {% csrf_token %}
+<input type="submit" name="logout" value="Logout">
+</form>
+
+</body>
+</html>
