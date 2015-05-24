@@ -2,8 +2,6 @@ from django.shortcuts import render
 from django.shortcuts import redirect, HttpResponse
 import requests
 import json
-import time
-from slackclient import SlackClient
 
 def index(request):
     if request.method == 'POST':
@@ -91,8 +89,6 @@ def display(request):
         del request.session["access_token"]
         return redirect('/scrum/')
     user_msg=[]
-    #if request.method == 'POST':
-    #if request.POST.get('display'):
     token = request.session["access_token"]
     user_dict=getuser_list(token)
     url = "https://slack.com/api/channels.history"
