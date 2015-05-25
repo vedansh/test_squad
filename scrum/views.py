@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.shortcuts import redirect, HttpResponse
 import requests
 import json
+import gspread
+from oauth2client.client import SignedJwtAssertionCredentials
 
 def index(request):
     if request.method == 'POST':
@@ -41,6 +43,24 @@ def validate_token(token):
         return json.loads(r.text)['ok']
     return False
 
+
+def save_message_to_Sheet(user_name,message):
+    json_key = json.load(open('scrum/scrum-175c6ebdef47.json'))
+    scope = ['https://spreadsheets.google.com/feeds']
+
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
+    gc = gspread.authorize(credentials)
+
+    sh = gc.open("Scrum_sheet")
+    try:
+	    worksheet = sh.worksheet(user_name)
+    except gspread.WorksheetNotFound:
+	    worksheet = sh.add_worksheet(title=user_name,rows="2", cols="1")
+	    worksheet.update_cell(1, 1, user_name+"'s messages")
+
+    worksheet.append_row([message])
+
+
 def channel(request):
     if "access_token" not in  request.session:
         return redirect('/scrum/')
@@ -59,6 +79,7 @@ def channel(request):
         channel = "C05123K29"
         params = {"token": token, "channel": channel, "text":message, "as_user": username}
         r = requests.get(url=url,params=params)
+        save_message_to_Sheet(username,message)
         return redirect('/scrum/channel/')
 
 def getuser_list(token):
