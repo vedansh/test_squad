@@ -14,3 +14,4 @@ redirect_uri = "http://127.0.0.1/scrum/callback/"
     # google spreadsheet authentication file to be added inside test_squadrun/scrum folder
 
 spreadsheet_authentication= "scrum/scrum-175c6ebdef47.json"
+spreadsheet_name = "Scrum_sheet"

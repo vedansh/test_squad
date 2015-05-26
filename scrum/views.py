@@ -53,7 +53,7 @@ def save_message_to_Sheet(user_name,message):
     credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
     gc = gspread.authorize(credentials)
 
-    sh = gc.open("Scrum_sheet")
+    sh = gc.open(constants.spreadsheet_name)
     try:
 	    worksheet = sh.worksheet(user_name)
     except gspread.WorksheetNotFound:
