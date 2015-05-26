@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from django.shortcuts import redirect, HttpResponse
+from django.shortcuts import redirect
+import constants
+
 import requests
 import json
 import gspread
@@ -8,7 +10,7 @@ from oauth2client.client import SignedJwtAssertionCredentials
 def index(request):
     if request.method == 'POST':
         if request.POST.get('login'):
-            return redirect("https://slack.com/oauth/authorize?client_id=5036120771.5043912009&scope=client&team=T05123JNP")
+            return redirect("https://slack.com/oauth/authorize?client_id=%s&scope=client&team=%s&redirect_uri=%s" %(constants.client_id,constants.team_id,constants.redirect_uri) )
     elif "access_token" in  request.session:
         return redirect('/scrum/channel/')
     else:
@@ -20,9 +22,9 @@ def callback(request):
     if request.GET.get('code'):
         code = request.GET.get('code')
         url = "https://slack.com/api/oauth.access"
-        params = {"client_id": "5036120771.5043912009", "client_secret": "da18ac610f63cf9ab855edd568cb2aa4" ,"code": code}
+        params = {"client_id": constants.client_id, "client_secret": constants.client_secret ,"code": code}
         r = requests.get(url=url, params=params)
-        # Getting access token
+        #print r.text
         request.session["access_token"] =  json.loads(r.text)['access_token']
         request.session.modified = True
         # Getting user name
@@ -45,7 +47,7 @@ def validate_token(token):
 
 
 def save_message_to_Sheet(user_name,message):
-    json_key = json.load(open('scrum/scrum-175c6ebdef47.json'))
+    json_key = json.load(open(constants.spreadsheet_authentication))
     scope = ['https://spreadsheets.google.com/feeds']
 
     credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
@@ -76,7 +78,7 @@ def channel(request):
         token = request.session["access_token"]
         username = request.session["username"]
         url = "https://slack.com/api/chat.postMessage"
-        channel = "C05123K29"
+        channel = constants.channel_id
         params = {"token": token, "channel": channel, "text":message, "as_user": username}
         r = requests.get(url=url,params=params)
         save_message_to_Sheet(username,message)
@@ -113,7 +115,7 @@ def display(request):
     token = request.session["access_token"]
     user_dict=getuser_list(token)
     url = "https://slack.com/api/channels.history"
-    channel = "C05123K29"
+    channel = constants.channel_id
     params = {"token": token,"channel": channel}
     r=requests.get(url=url,params=params)
     user_msg=getmessage_list(json.loads(r.text)['messages'],user_dict)
@@ -123,6 +125,6 @@ def display(request):
 def logout(request):
     if "access_token" in  request.session:
         del request.session ["access_token"]
-        return redirect('/scrum/')
+    return redirect('/scrum/')
 
 

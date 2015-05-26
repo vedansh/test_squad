@@ -5,7 +5,8 @@ urlpatterns = patterns('',
             url('callback/$', view=callback),
             url('channel/$', view=channel),
             url('display/$', view=display),
-            url('logout/$',view = logout)
+            url('logout/$',view = logout),
+            url('callback/scrum/$',view = logout),
 
 )
 
